@@ -66,7 +66,7 @@ public class GameBean implements Serializable {
     }
 
     public String newGame() {
-        universe = new Universe();
+        universe = new Universe()
         thinkABit(250);
         return "game/edit";
     }
