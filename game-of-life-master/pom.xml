@@ -19,6 +19,10 @@
         <thucydides.version>0.9.268</thucydides.version>
         <jelastic.context>gameoflife</jelastic.context>
         <jelastic.environment>wakaleo</jelastic.environment>
+        <!-- Input Parameter - GlassFish properties file -->
+        <glassfish.properties.file.argument></glassfish.properties.file.argument>
+        <endorsed.dir>${project.build.directory}/endorsed</endorsed.dir>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
     <scm>
@@ -34,6 +38,9 @@
                 <configuration>
                     <source>1.7</source>
                     <target>1.7</target>
+                    <compilerArguments>
+                        <endorseddirs>${endorsed.dir}</endorseddirs>
+                    </compilerArguments>
                 </configuration>
             </plugin>
             <plugin>
@@ -142,7 +149,69 @@
                     <api_hoster>app.jelastic.servint.net</api_hoster>
                 </configuration>
             </plugin>
+            
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <version>2.6</version>
+                <executions>
+                    <execution>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>copy</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${endorsed.dir}</outputDirectory>
+                            <silent>true</silent>
+                            <artifactItems>
+                                <artifactItem>
+                                    <groupId>javax</groupId>
+                                    <artifactId>javaee-endorsed-api</artifactId>
+                                    <version>7.0</version>
+                                    <type>jar</type>
+                                </artifactItem>
+                            </artifactItems>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>properties-maven-plugin</artifactId>
+                <version>1.0-alpha-2</version>
+                <configuration>
+                    <files>
+                        <file>${basedir}/properties/${glassfish.properties.file.argument}.properties</file>
+                    </files>
+                </configuration>
+            </plugin>
 
+            <plugin>
+                <groupId>org.glassfish.maven.plugin</groupId>
+                <artifactId>maven-glassfish-plugin</artifactId>
+                <version>2.1</version>
+                <configuration>
+                    <glassfishDirectory>${glassfish.directory}</glassfishDirectory>
+                    <user>${glassfish.user}</user>
+                    <passwordFile>${basedir}/passwords/${glassfish.pwdfile}</passwordFile>
+                    <echo>true</echo>
+                    <debug>true</debug>
+                    <terse>true</terse>
+                    <domain>
+                        <name>${glassfish.domain}</name>
+                        <host>${glassfish.host}</host>
+                        <adminPort>${glassfish.adminport}</adminPort>
+                    </domain>
+                    <components>
+                        <component>
+                            <name>${project.artifactId}</name>
+                            <artifact>${project.build.directory}/${project.build.finalName}.war</artifact>
+                        </component>
+                    </components>
+                </configuration>  
+            </plugin>
+            
         </plugins>
 
         <pluginManagement>
@@ -203,6 +272,24 @@
             <artifactId>mockito-all</artifactId>
             <version>1.9.0</version>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.maven</groupId>
+            <artifactId>maven-project</artifactId>
+            <version>3.0-alpha-2</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.maven</groupId>
+            <artifactId>maven-plugin-api</artifactId>
+            <version>3.0.4</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.maven</groupId>
+            <artifactId>maven-artifact</artifactId>
+            <version>3.0.4</version>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 
