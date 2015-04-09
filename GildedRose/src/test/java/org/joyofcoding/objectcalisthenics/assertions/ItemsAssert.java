@@ -1,54 +1,62 @@
 package org.joyofcoding.objectcalisthenics.assertions;
 
-import static org.fest.assertions.api.Assertions.extractProperty;
-
 import org.fest.assertions.api.AbstractIterableAssert;
 import org.fest.assertions.api.Assertions;
-import org.joyofcoding.objectcalisthenics.Item;
+import org.joyofcoding.objectcalisthenics.model.Item;
 
-public class ItemsAssert extends
-		AbstractIterableAssert<ItemsAssert, Iterable<Item>, Item> {
+import java.util.ArrayList;
+import java.util.List;
 
-	
-	protected ItemsAssert(Iterable<Item> actual) {
-		super(actual, ItemsAssert.class);
-	}
+public class ItemsAssert extends AbstractIterableAssert<ItemsAssert, Iterable<Item>, Item> {
 
-	public static ItemsAssert assertThat(Iterable<Item> actual) {
-		return new ItemsAssert(actual);
-	}
 
-	public ItemsAssert containsOnlyItemNames(String... names) {
-		isNotNull();
+    private ItemsAssert(final Iterable<Item> actual) {
+        super(actual, ItemsAssert.class);
+    }
 
-		Iterable<String> actualItemNames = extractProperty("name", String.class)
-				.from(actual);
-		
-		Assertions
-				.assertThat(actualItemNames)
-				.containsOnly(names);
+    public ItemsAssert containsOnlyItemNames(final String... names) {
+        isNotNull();
 
-		return this;
-	}
-	
-	public ItemsAssert containsOnlyItemQualities(Integer... qualities) {
-		isNotNull();
-		
-		Iterable<Integer> actualItemQualities = extractProperty("itemDescription.itemQuality.quality", Integer.class)
-				.from(actual);
-        Assertions.assertThat(actualItemQualities).containsOnly(qualities);
-        
-		return this;
-	}
-	
-	public ItemsAssert containsOnlyItemSellIns(Integer... sellIns) {
-		isNotNull();
-		
-		Iterable<Integer> actualItemSellIns = extractProperty("itemDescription.itemSellIn.sellIn", Integer.class)
-				.from(actual);
-		Assertions.assertThat(actualItemSellIns).containsOnly(sellIns);
-		
-		return this;
-	}
+        final List<String> actualItemNames = new ArrayList<String>();
+        for (final Item item : this.actual) {
+            actualItemNames.add(item.toString());
+        }
+
+        Assertions.assertThat(actualItemNames)
+                  .containsOnly(names);
+
+        return this;
+    }
+
+    public ItemsAssert containsOnlyItemQualities(final Integer... qualities) {
+        isNotNull();
+
+        final List<Integer> actualItemQualities = new ArrayList<Integer>();
+        for (final Item item : this.actual) {
+            actualItemQualities.add(item.qualityValue());
+        }
+        Assertions.assertThat(actualItemQualities)
+                  .containsOnly(qualities);
+
+        return this;
+    }
+
+    public ItemsAssert containsOnlyItemSellIns(final Integer... sellIns) {
+        isNotNull();
+
+        final List<Integer> actualItemSellIns = new ArrayList<Integer>();
+        for (final Item item : this.actual) {
+            actualItemSellIns.add(item.daysLeft());
+        }
+        Assertions.assertThat(actualItemSellIns)
+                  .containsOnly(sellIns);
+
+        return this;
+    }
+
+    public static ItemsAssert assertThat(final Iterable<Item> actual) {
+        return new ItemsAssert(actual);
+    }
+
 
 }
