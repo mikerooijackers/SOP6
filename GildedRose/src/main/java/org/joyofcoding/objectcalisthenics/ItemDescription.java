@@ -7,7 +7,7 @@ package org.joyofcoding.objectcalisthenics;
 
 /**
  *
- * @author Bros Laptop
+ * @author mikerooijackers
  */
 public class ItemDescription {
 
